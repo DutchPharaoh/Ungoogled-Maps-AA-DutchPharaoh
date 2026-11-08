@@ -1,4 +1,4 @@
-# GoogleMap-Morphe: two-wheeler navigation with Google Maps on Android Auto
+# Maps-AA-AnyMode-Morphe: two-wheeler navigation with Google Maps on Android Auto
 
 **English** | [中文](README.zh-TW.md)
 
@@ -27,7 +27,7 @@ This project does not distribute Google Maps. Get the original APKM of the versi
 |---|---|
 | Morphe Manager | <https://morphe.software> |
 | **This version of MicroG-RE** (required) | [shuili1013/MicroG-RE releases](https://github.com/shuili1013/MicroG-RE/releases/tag/v7.3.0-maps-fix) → `microg-re-maps-fix-7.3.0.apk` |
-| This project's patch bundle | Add the remote source `github.com/shuili1013/GoogleMap-Morphe` in Morphe (or download `patches-1.0.0.mpp` from [Releases](https://github.com/shuili1013/GoogleMap-Morphe/releases) and add it as a local source) |
+| This project's patch bundle | Add the remote source `github.com/shuili1013/Maps-AA-AnyMode-Morphe` in Morphe (or download `patches-1.0.1.mpp` from [Releases](https://github.com/shuili1013/Maps-AA-AnyMode-Morphe/releases) and add it as a local source) |
 
 The bundle already includes the Dutch App Patches features it needs; you do not need to add Dutch App Patches separately.
 
@@ -44,8 +44,8 @@ If official MicroG-RE is already installed, **uninstall it first**, then install
 
 1. **Install MicroG-RE** (link above) and run its Self-Check.
 2. **Morphe settings → Patching → enable Expert mode.**
-3. **Sources → + → Remote →** enter `github.com/shuili1013/GoogleMap-Morphe`. If you previously added Dutch App Patches for Maps, disable it.
-4. **Patch Google Maps** (the 26.44 APKM) and select these patches from the **GoogleMap-Morphe** source (all are on by default):
+3. **Sources → + → Remote →** enter `github.com/shuili1013/Maps-AA-AnyMode-Morphe`. If you previously added Dutch App Patches for Maps, disable it.
+4. **Patch Google Maps** (the 26.44 APKM) and select these patches from the **Maps-AA-AnyMode-Morphe** source (all are on by default):
    - `Change package name`
    - `Bypass Play Services checks`
    - `Add microG-RE support`

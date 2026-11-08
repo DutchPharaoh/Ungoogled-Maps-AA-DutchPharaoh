@@ -1,4 +1,4 @@
-# GoogleMap-Morphe:Android Auto 上的 Google Maps 機車導航
+# Maps-AA-AnyMode-Morphe:Android Auto 上的 Google Maps 機車導航
 
 [English](README.md) | **中文**
 
@@ -27,7 +27,7 @@
 |---|---|
 | Morphe Manager | <https://morphe.software> |
 | **該版本的 MicroG-RE**(必須用這版) | [shuili1013/MicroG-RE releases](https://github.com/shuili1013/MicroG-RE/releases/tag/v7.3.0-maps-fix) → `microg-re-maps-fix-7.3.0.apk` |
-| 本專案的 patch bundle | 在 Morphe 加入 remote source `github.com/shuili1013/GoogleMap-Morphe`(或從 [Releases](https://github.com/shuili1013/GoogleMap-Morphe/releases) 下載 `patches-1.0.0.mpp`,用 Local 方式加入) |
+| 本專案的 patch bundle | 在 Morphe 加入 remote source `github.com/shuili1013/Maps-AA-AnyMode-Morphe`(或從 [Releases](https://github.com/shuili1013/Maps-AA-AnyMode-Morphe/releases) 下載 `patches-1.0.1.mpp`,用 Local 方式加入) |
 
 這個 bundle 已經包含所需的 Dutch App Patches 功能,**不用再另外加入 Dutch App Patches**。
 
@@ -44,8 +44,8 @@
 
 1. **安裝 MicroG-RE**(上表連結),打開它跑 Self-Check。
 2. **Morphe 設定 → Patching → 開啟 Expert mode**。
-3. **Sources → + → Remote →** 輸入 `github.com/shuili1013/GoogleMap-Morphe`。之前如果為了 Maps 加過 Dutch App Patches,請先停用。
-4. **Patch Google Maps**(選 26.44 的 APKM),在 **GoogleMap-Morphe** 這個 source 勾選以下 patch(預設都是勾選的):
+3. **Sources → + → Remote →** 輸入 `github.com/shuili1013/Maps-AA-AnyMode-Morphe`。之前如果為了 Maps 加過 Dutch App Patches,請先停用。
+4. **Patch Google Maps**(選 26.44 的 APKM),在 **Maps-AA-AnyMode-Morphe** 這個 source 勾選以下 patch(預設都是勾選的):
    - `Change package name`
    - `Bypass Play Services checks`
    - `Add microG-RE support`
