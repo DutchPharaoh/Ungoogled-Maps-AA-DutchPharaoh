@@ -6,7 +6,7 @@
 
 用 [Morphe](https://morphe.software) 修補,修補後的 Maps 以另一個 package 安裝,**與原廠 Google Maps 並存**:原廠的照常拿來開車,修補版拿來騎機車。
 
-> ⚠️ 實驗性專案。只在 Galaxy S25(Android 16)+ headunit 模擬車機(USB 有線)上驗證過。上路前請先停車測試;路線是否合法(例如 125cc 禁行國道、快速道路)請依現地標誌判斷,不能只看 App。
+> 實驗性專案。只在 Galaxy S25(Android 16)+ headunit 模擬車機(USB 有線)上驗證過。上路前請先停車測試;路線是否合法(例如 125cc 禁行國道、快速道路)請依現地標誌判斷,不能只看 App。
 
 ## 功能
 
