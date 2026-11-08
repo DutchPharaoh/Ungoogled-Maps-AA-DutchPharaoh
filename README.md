@@ -27,8 +27,9 @@ This project does not distribute Google Maps. Get the original APKM of the versi
 |---|---|
 | Morphe Manager | <https://morphe.software> |
 | **This version of MicroG-RE** (required) | [shuili1013/MicroG-RE releases](https://github.com/shuili1013/MicroG-RE/releases/tag/v7.3.0-maps-fix) → `microg-re-maps-fix-7.3.0.apk` |
-| Fixed Dutch App Patches bundle | [release `dutch-1.53.9-aa-fix2` in this repo](https://github.com/shuili1013/GoogleMap-Morphe/releases/tag/dutch-1.53.9-aa-fix2) → `patches-1.53.9-aa-fix2.mpp` |
-| This project's patches | Add the remote source `github.com/shuili1013/GoogleMap-Morphe` in Morphe |
+| This project's patch bundle | Add the remote source `github.com/shuili1013/GoogleMap-Morphe` in Morphe (or download `patches-1.0.0.mpp` from [Releases](https://github.com/shuili1013/GoogleMap-Morphe/releases) and add it as a local source) |
+
+The bundle already includes the Dutch App Patches features it needs; you do not need to add Dutch App Patches separately.
 
 ### Why this version of MicroG-RE is required
 
@@ -43,18 +44,17 @@ If official MicroG-RE is already installed, **uninstall it first**, then install
 
 1. **Install MicroG-RE** (link above) and run its Self-Check.
 2. **Morphe settings → Patching → enable Expert mode.**
-3. **Add the patch sources:**
-   - Sources → **+** → **Local** → pick the downloaded `patches-1.53.9-aa-fix2.mpp`
-   - Sources → **+** → **Remote** → enter `github.com/shuili1013/GoogleMap-Morphe`
-   - If you already added the official Dutch App Patches, **disable** it so the two sources with the same name do not clash.
-4. **Patch Google Maps** (the 26.44 APKM) with this selection:
+3. **Sources → + → Remote →** enter `github.com/shuili1013/GoogleMap-Morphe`. If you previously added Dutch App Patches for Maps, disable it.
+4. **Patch Google Maps** (the 26.44 APKM) and select these patches from the **GoogleMap-Morphe** source (all are on by default):
+   - `Change package name`
+   - `Bypass Play Services checks`
+   - `Add microG-RE support`
+   - `Native navigation for Gearslip and Android Auto`
+   - `Allow any travel mode on Android Auto`
+   - `Always two-wheeler on Android Auto`
+   - `Skip private Android Auto car connection`
 
-   | Source | Selection |
-   |---|---|
-   | Dutch App Patches (local fixed bundle) | Tap **Enable recommended patches**, then also tick **`Add microG-RE support`** |
-   | Maps two-wheeler experiment | ✅ `Allow any travel mode on Android Auto`<br>✅ `Always two-wheeler on Android Auto`<br>✅ `Skip private Android Auto car connection`<br>❌ `Two-wheeler instead of driving` (optional: turns driving routes into two-wheeler routes too)<br>❌ `Experimental projected CAR two-wheeler routing` (old; edits the same method as the previous one, never select both) |
-
-   Do **not** select `Clone app` from the official Morphe Patches (Dutch's `Change package name` already renames the app).
+   Do not add patches for Maps from other sources (e.g. `Clone app` from the official Morphe Patches).
 5. **Install.** The patched app installs as `org.ungoogled.android.apps.maps.microg`, named **Ungoogled Maps**.
 6. **Allow unknown sources in Android Auto:** Android Auto settings on the phone → tap "Version" about 10 times to enable developer mode → top-right menu "Developer settings" → enable **Unknown sources**.
 7. Connect to the head unit and pick **Ungoogled Maps** (the head unit shows two Maps icons; stock Maps cannot be hidden, so pick the right one).
@@ -65,30 +65,32 @@ If official MicroG-RE is already installed, **uninstall it first**, then install
 - Real head units, wireless Android Auto, rerouting and long real-road trips are not fully verified.
 - Navigation started on the phone and handed to the head unit is less tested than navigation started from a search on the head unit.
 
-## What this project's patches do
+## Patches in the bundle
 
-| Patch | Description |
-|---|---|
-| `Skip private Android Auto car connection` | Maps' `CarConnectionHandler.onCarConnected` calls a private Android Auto service, which always rejects a re-signed app (`Wrong signature - go/gearhead-retail-device`) and crashes it. The handler is skipped. |
-| `Always two-wheeler on Android Auto` | Android Auto's "supported mode" normally allows two-wheeler only when the head unit reports a motorcycle; it now returns two-wheeler, so destinations searched on the head unit default to two-wheeler routes. |
-| `Allow any travel mode on Android Auto` | Removes the two checks that refuse or end car navigation when the travel mode differs. |
-| `Two-wheeler instead of driving` (optional) | Rewrites every driving route request as two-wheeler. |
+| Patch | Origin | Description |
+|---|---|---|
+| `Change package name` | Dutch App Patches | Installs beside stock Google Maps under its own package name. |
+| `Bypass Play Services checks` | Dutch App Patches | Lets a re-signed Maps load tiles, search and routing. |
+| `Add microG-RE support` | Dutch App Patches | Google sign-in through MicroG-RE. |
+| `Native navigation for Gearslip and Android Auto` | Dutch App Patches, fixed for 26.44 here | Runs Maps' native car map and navigation UI on Android Auto. |
+| `Skip private Android Auto car connection` | This project | Maps' `CarConnectionHandler.onCarConnected` calls a private Android Auto service that always rejects a re-signed app (`Wrong signature - go/gearhead-retail-device`) and crashes it. The handler is skipped. |
+| `Always two-wheeler on Android Auto` | This project | Android Auto's "supported mode" becomes two-wheeler, so destinations searched on the head unit default to two-wheeler routes. |
+| `Allow any travel mode on Android Auto` | This project | Removes the two checks that refuse or end car navigation when the travel mode differs. |
 
-Source: `patch/patches/src/main/kotlin/tw/maps/`. The full debugging history, logcat evidence and 26.44 name mappings are in [findings.md](findings.md) (Chinese).
+Source: `patch/`. This project's patches are in `patch/patches/src/main/kotlin/tw/maps/`; the included Dutch App Patches code is in `patch/patches/src/main/kotlin/dutch/`, `patch/extensions/` and `patch/support/` (see [NOTICE](NOTICE) for what was changed). The full debugging history, logcat evidence and 26.44 name mappings are in [findings.md](findings.md) (Chinese).
 
 ## Original sources and credits
 
 This project builds on:
 
 - **[Morphe](https://github.com/MorpheApp)**: patcher, Manager and the [patches template](https://github.com/MorpheApp/morphe-patches-template).
-- **[Dutch App Patches](https://codeberg.org/JohninNL/nl-morphe-patches)** (JohninNL, GPLv3; [GitLab mirror](https://gitlab.com/johninnld/nl-morphe-patches)): the native Android Auto navigation adapter, `Change package name`, `Bypass Play Services checks`, `Add microG-RE support` and more. This repo's fix patches and notes are in [`third_party/dutch-app-patches/`](third_party/dutch-app-patches/).
+- **[Dutch App Patches](https://codeberg.org/JohninNL/nl-morphe-patches)** (JohninNL, GPLv3; [GitLab mirror](https://gitlab.com/johninnld/nl-morphe-patches)): the native Android Auto navigation adapter, `Change package name`, `Bypass Play Services checks` and `Add microG-RE support` are included from v1.53.9. The 26.44 fixes to the adapter are also recorded as patches in [`third_party/dutch-app-patches/`](third_party/dutch-app-patches/).
 - **[bearinmind patches](https://github.com/bearinmindcat/morphe-patches)** (bearinmindcat): the original source of the Maps features in Dutch App Patches.
 - **[MicroG-RE](https://github.com/MorpheApp/MicroG-RE)** (MorpheApp) and **[microG](https://github.com/microg/GmsCore)** (microG Project, Apache-2.0): this version of MicroG-RE ([shuili1013/MicroG-RE](https://github.com/shuili1013/MicroG-RE)) is based on them.
 
 ## License
 
-- Code in this repo: see [LICENSE](LICENSE) (Apache-2.0).
-- The patches in `third_party/dutch-app-patches/` and the fixed Dutch App Patches bundle in the releases: GPLv3, as upstream.
+- This repository, including the patch bundle: **GPLv3**, see [LICENSE](LICENSE) and [NOTICE](NOTICE).
 - This version of MicroG-RE: Apache-2.0, as upstream.
 - This project does not distribute any Google APK.
 
