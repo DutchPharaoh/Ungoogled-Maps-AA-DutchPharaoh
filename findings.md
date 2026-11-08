@@ -11,9 +11,9 @@ Morphe Manager（Expert mode），Google Maps 26.44.06.1006895251 APKM：
 | Source | Patch |
 |---|---|
 | Dutch App Patches v1.53.9，**本地修正版** `patches-1.53.9-aa-fix2.mpp`（Local source） | 「Enable recommended patches」預設組合 + `Add microG-RE support` |
-| Maps two-wheeler experiment v0.4.0（本 repo） | `Two-wheeler instead of driving`、`Always two-wheeler on Android Auto`、`Skip private Android Auto car connection`；**不選** `Experimental projected CAR two-wheeler routing`（同改 `btxk.h`） |
+| Maps two-wheeler experiment v0.5.0（本 repo） | `Allow any travel mode on Android Auto`、`Always two-wheeler on Android Auto`、`Skip private Android Auto car connection`；**不選** `Two-wheeler instead of driving`（選配：汽車也改機車）與 `Experimental projected CAR two-wheeler routing`（同改 `btxk.h`） |
 
-另需：MicroG-RE 自建版（fork `shuili1013/MicroG-RE`），Android Auto 開發人員設定「不明來源」。原廠 Maps 保留給汽車使用（Android Auto 無法隱藏它）；Ungoogled Maps 僅供機車，**其「汽車」模式也會規劃機車路線**。
+另需：MicroG-RE 自建版（fork `shuili1013/MicroG-RE`），Android Auto 開發人員設定「不明來源」。原廠 Maps 保留不動（Android Auto 無法隱藏它）。v0.5.0 實測（2026-11-08）：Ungoogled Maps 在車機上選機車走機車路線、選汽車走汽車路線，不再出現「switch to ... directions」，可連續導航。
 
 ### 依序解決的問題（皆有 logcat 證據）
 
@@ -24,13 +24,13 @@ Morphe Manager（Expert mode），Google Maps 26.44.06.1006895251 APKM：
 5. **閃退 `SecurityException: Wrong signature - go/gearhead-retail-device`**：`pxt.b`（`CarConnectionHandler.onCarConnected`）經 `Lbeop;` token 呼叫 Android Auto 私有服務 `ltf.x(5)`，重簽 App 一律被拒且未捕捉。本 repo patch 讓其直接 return。
 6. **`NoSuchMethodException: GmmCarProjectionService.f(Surface)`**：`controller.k` 於 26.44 為 `bete`（實作介面 `betg`），`h` 變成 `Context`，Surface 接收者 `Lbesz;` 移到 `j`。另 `controller.J.B(Intent)`（onNewIntent）改名為 `C(Intent)`。
 7. **車機一律汽車路線／「switch to driving directions」**：讀車種的 `onCarConnected` 被略過，`btxk.h()`（投影支援模式）永遠為 DRIVE。改為恆回傳 `ckbl.f`（TWO_WHEELER）。
-8. **只有第一個目的地可導航**：後續請求仍以 DRIVE 建立，被 `trq.h`（`PROJECTED_ONLY_*`）與 `siy.d`（`SessionAwareNavigationModeTracker.onNewSession`，結束車機導航並 Toast）拒絕。`yff.p`（唯一寫入請求交通模式處）DRIVE→TWO_WHEELER，`trq.h` 恆 false，`siy.d` 視為模式一致。
+8. **只有第一個目的地可導航**：後續請求仍以 DRIVE 建立，被 `trq.h`（`PROJECTED_ONLY_*`）與 `siy.d`（`SessionAwareNavigationModeTracker.onNewSession`，結束車機導航並 Toast）拒絕。`trq.h` 恆 false、`siy.d` 視為模式一致（`Allow any travel mode on Android Auto`）；`yff.p`（唯一寫入請求交通模式處）DRIVE→TWO_WHEELER 另拆為選配 patch。
 
 另：Git Bash 會改寫 `adb push /sdcard/...` 路徑，需 `MSYS_NO_PATHCONV=1`。
 
 ### 修正所在
 
-- 本 repo `patch/patches/src/main/kotlin/tw/maps/`：`SkipPrivateCarConnection.kt`、`AlwaysTwoWheelerOnAndroidAuto.kt`、`TwoWheelerInsteadOfDriving.kt`；發布 `v0.2.0`～`v0.4.0`。
+- 本 repo `patch/patches/src/main/kotlin/tw/maps/`：`SkipPrivateCarConnection.kt`、`AlwaysTwoWheelerOnAndroidAuto.kt`、`AllowAnyModeOnAndroidAuto.kt`、`TwoWheelerInsteadOfDriving.kt`；發布 `v0.2.0`～`v0.5.0`。
 - Dutch App Patches 擴充 `extensions/maps-gearslip`：本機 clone commit `2703a1f`、`edef684`（基於 v1.53.9）。整包重建需其私有 `SHARED_MAPS_API_KEY`，故以官方 v1.53.9 `.mpp` 替換 `extensions/maps-gearslip.mpe` 並移除失效簽章（`patches-1.53.9-aa-fix2.mpp`）。**尚未推上 GitHub／回報上游。**
 - MicroG-RE：fork `shuili1013/MicroG-RE`（`PackageUtils.java`、`play-services-location/core/src/main/AndroidManifest.xml`）。
 
