@@ -1,95 +1,97 @@
-# GoogleMap-Morphe:Android Auto 上的 Google Maps 機車導航
+# GoogleMap-Morphe: two-wheeler navigation with Google Maps on Android Auto
 
-讓 **Google Maps 在 Android Auto 車機上用原生介面導航,並可使用機車(two-wheeler)路線**。適合裝在機車上的 Android Auto 螢幕:原廠 Google Maps 在 Android Auto 上只允許開車路線,會擋下機車導航。
+**English** | [中文](README.zh-TW.md)
 
-用 [Morphe](https://morphe.software) 修補,修補後的 Maps 以另一個 package 安裝,**與原廠 Google Maps 並存**:原廠的照常拿來開車,修補版拿來騎機車。
+Makes **Google Maps navigate on an Android Auto head unit with its native car interface, including two-wheeler (motorcycle) routes**. Intended for an Android Auto screen mounted on a motorcycle: stock Google Maps only allows driving routes on Android Auto and refuses two-wheeler navigation.
 
-> ⚠️ 實驗性專案。只在 Galaxy S25(Android 16)+ headunit 模擬車機(USB 有線)上驗證過。上路前請先停車測試;路線是否合法(例如 125cc 禁行國道、快速道路)請依現地標誌判斷,不能只看 App。
+Patched with [Morphe](https://morphe.software). The patched Maps installs under a different package, **alongside stock Google Maps**: keep stock Maps for driving, use the patched copy on the motorcycle.
 
-## 功能
+> ⚠️ Experimental. Only verified on a Galaxy S25 (Android 16) with the headunit head-unit emulator (wired USB). Test while parked before riding. Whether a route is legal (e.g. 125cc bikes are banned from Taiwan's national freeways) depends on local road signs, not on the app.
 
-- 車機上顯示 Google Maps 原生地圖與轉彎卡片
-- 選**機車**走機車路線、選**汽車**走汽車路線,車機不會再跳「To navigate on Android Auto, switch to ... directions」
-- 可在車機上搜尋目的地,也可連續導航多個目的地
-- 可登入 Google 帳號(透過 MicroG-RE)、定位正常
+## Features
 
-## 支援版本
+- Native Google Maps map and turn cards on the head unit
+- Two-wheeler mode gives a two-wheeler route and driving mode gives a driving route; the head unit no longer shows "To navigate on Android Auto, switch to ... directions"
+- Search destinations on the head unit and navigate to several destinations in a row
+- Google sign-in (through MicroG-RE) and location work
 
-**只支援 Google Maps `26.44.06.1006895251`(versionCode `1068856906`,arm64-v8a)**。所有修改都綁定這個版本的混淆名稱,其他版本會直接 patch 失敗(不會裝出壞掉的 App)。修補版裝好後**不要更新**。
+## Supported version
 
-本專案不提供 Google Maps 安裝檔,請自行從 APKMirror 等處取得上述版本的原始 APKM。
+**Google Maps `26.44.06.1006895251` only (versionCode `1068856906`, arm64-v8a).** Every change is pinned to this build's obfuscated names; other versions fail at patch time (they do not produce a broken app). **Do not update** the patched app.
 
-## 需要的東西
+This project does not distribute Google Maps. Get the original APKM of the version above yourself (e.g. from APKMirror).
 
-| 項目 | 下載 |
+## What you need
+
+| Item | Download |
 |---|---|
 | Morphe Manager | <https://morphe.software> |
-| **本專案的 MicroG-RE**(必須用這版) | [shuili1013/MicroG-RE releases](https://github.com/shuili1013/MicroG-RE/releases/tag/v7.3.0-maps-fix) → `microg-re-maps-fix-7.3.0.apk` |
-| Dutch App Patches 修正版 | [本 repo release `dutch-1.53.9-aa-fix2`](https://github.com/shuili1013/GoogleMap-Morphe/releases/tag/dutch-1.53.9-aa-fix2) → `patches-1.53.9-aa-fix2.mpp` |
-| 本專案的 patch | 在 Morphe 加入 remote source `github.com/shuili1013/GoogleMap-Morphe` |
+| **This version of MicroG-RE** (required) | [shuili1013/MicroG-RE releases](https://github.com/shuili1013/MicroG-RE/releases/tag/v7.3.0-maps-fix) → `microg-re-maps-fix-7.3.0.apk` |
+| Fixed Dutch App Patches bundle | [release `dutch-1.53.9-aa-fix2` in this repo](https://github.com/shuili1013/GoogleMap-Morphe/releases/tag/dutch-1.53.9-aa-fix2) → `patches-1.53.9-aa-fix2.mpp` |
+| This project's patches | Add the remote source `github.com/shuili1013/GoogleMap-Morphe` in Morphe |
 
-### 為什麼一定要用我的 MicroG-RE
+### Why this version of MicroG-RE is required
 
-官方 MicroG-RE 對修補過的 Google Maps 有兩個問題,我的版本已修正:
+Official MicroG-RE has two problems with a patched Google Maps, both fixed in this version of MicroG-RE:
 
-1. **無法登入、地圖/搜尋失敗**:MicroG-RE 只對白名單內的 Google App 提供帳號存取,白名單裡沒有 Google Maps(log:`GmsAuthProvider: Not granting extended access`)。
-2. **無法定位**:Maps 用原始的 `com.google.android.location.internal.GoogleLocationManagerService.START` 連定位服務,官方版只接受 `app.revanced` 前綴的名稱(log:`Unable to start service ... not found`)。
+1. **No sign-in, map and search fail**: MicroG-RE only gives account access to Google apps on its allow list, and Google Maps is not on it (log: `GmsAuthProvider: Not granting extended access`).
+2. **No location**: Maps connects to the location service with the original `com.google.android.location.internal.GoogleLocationManagerService.START` action, while the official build only accepts the `app.revanced`-prefixed name (log: `Unable to start service ... not found`).
 
-已經裝了官方 MicroG-RE 的話,要**先解除安裝**再裝我的版本(簽章不同,不能直接覆蓋)。裝好後打開 MicroG 設定跑一次 Self-Check。
+If official MicroG-RE is already installed, **uninstall it first**, then install this version of MicroG-RE (different signing key, Android cannot update over it). Afterwards open MicroG settings and run Self-Check.
 
-## 安裝步驟
+## Installation
 
-1. **安裝 MicroG-RE**(上表連結),打開它跑 Self-Check。
-2. **Morphe 設定 → Patching → 開啟 Expert mode**。
-3. **加入 patch source**:
-   - Sources → **+** → **Local** → 選下載的 `patches-1.53.9-aa-fix2.mpp`
-   - Sources → **+** → **Remote** → 輸入 `github.com/shuili1013/GoogleMap-Morphe`
-   - 如果你本來就加過官方的 Dutch App Patches,請先**停用**,避免兩個同名 source 衝突。
-4. **Patch Google Maps**(選 26.44 的 APKM),patch 選擇畫面這樣勾:
+1. **Install MicroG-RE** (link above) and run its Self-Check.
+2. **Morphe settings → Patching → enable Expert mode.**
+3. **Add the patch sources:**
+   - Sources → **+** → **Local** → pick the downloaded `patches-1.53.9-aa-fix2.mpp`
+   - Sources → **+** → **Remote** → enter `github.com/shuili1013/GoogleMap-Morphe`
+   - If you already added the official Dutch App Patches, **disable** it so the two sources with the same name do not clash.
+4. **Patch Google Maps** (the 26.44 APKM) with this selection:
 
-   | Source | 勾選 |
+   | Source | Selection |
    |---|---|
-   | Dutch App Patches(Local 修正版) | 按「**Enable recommended patches**」恢復預設,再手動勾 **`Add microG-RE support`** |
-   | Maps two-wheeler experiment | ✅ `Allow any travel mode on Android Auto`<br>✅ `Always two-wheeler on Android Auto`<br>✅ `Skip private Android Auto car connection`<br>❌ `Two-wheeler instead of driving`(選配:勾了連汽車也會變機車路線)<br>❌ `Experimental projected CAR two-wheeler routing`(舊版,跟上一項改同一處,不可同時勾) |
+   | Dutch App Patches (local fixed bundle) | Tap **Enable recommended patches**, then also tick **`Add microG-RE support`** |
+   | Maps two-wheeler experiment | ✅ `Allow any travel mode on Android Auto`<br>✅ `Always two-wheeler on Android Auto`<br>✅ `Skip private Android Auto car connection`<br>❌ `Two-wheeler instead of driving` (optional: turns driving routes into two-wheeler routes too)<br>❌ `Experimental projected CAR two-wheeler routing` (old; edits the same method as the previous one, never select both) |
 
-   官方 Morphe Patches 的 `Clone app` **不要勾**(Dutch 的 `Change package name` 已經負責改名)。
-5. **安裝**。修補版會以 `org.ungoogled.android.apps.maps.microg` 安裝,名稱是 **Ungoogled Maps**。
-6. **Android Auto 開啟不明來源**:手機的 Android Auto 設定 → 連點「版本」約 10 次開啟開發人員模式 → 右上選單「開發人員設定」→ 開啟「**不明來源**」。
-7. 連上車機,選 **Ungoogled Maps**(車機上會有兩個 Maps 圖示,原廠那個無法隱藏,別選錯)。
+   Do **not** select `Clone app` from the official Morphe Patches (Dutch's `Change package name` already renames the app).
+5. **Install.** The patched app installs as `org.ungoogled.android.apps.maps.microg`, named **Ungoogled Maps**.
+6. **Allow unknown sources in Android Auto:** Android Auto settings on the phone → tap "Version" about 10 times to enable developer mode → top-right menu "Developer settings" → enable **Unknown sources**.
+7. Connect to the head unit and pick **Ungoogled Maps** (the head unit shows two Maps icons; stock Maps cannot be hidden, so pick the right one).
 
-## 已知限制
+## Known limitations
 
-- Android Auto 側欄的「下一個轉彎」資訊不會顯示;車機主畫面的地圖與轉彎卡片正常。
-- 實體車機、無線 Android Auto、偏航重算、長程實際道路尚未完整驗證。
-- 從手機上開始導航再交給車機,比在車機上搜尋開始的情況測試得少。
+- The "next turn" info in Android Auto's side rail is not shown; the map and turn cards on the main car screen work.
+- Real head units, wireless Android Auto, rerouting and long real-road trips are not fully verified.
+- Navigation started on the phone and handed to the head unit is less tested than navigation started from a search on the head unit.
 
-## 本專案的 patch 做了什麼
+## What this project's patches do
 
-| Patch | 說明 |
+| Patch | Description |
 |---|---|
-| `Skip private Android Auto car connection` | Maps 的 `CarConnectionHandler.onCarConnected` 會呼叫 Android Auto 私有服務,重新簽名的 App 一律被拒(`Wrong signature - go/gearhead-retail-device`)並閃退。改為直接略過。 |
-| `Always two-wheeler on Android Auto` | Android Auto 的「支援模式」判斷原本要車機回報機車才允許機車;改為機車,讓在車機上搜尋的目的地預設走機車路線。 |
-| `Allow any travel mode on Android Auto` | 移除「模式不符就擋下/結束車機導航」的兩道檢查。 |
-| `Two-wheeler instead of driving`(選配) | 把所有汽車路線請求改成機車。 |
+| `Skip private Android Auto car connection` | Maps' `CarConnectionHandler.onCarConnected` calls a private Android Auto service, which always rejects a re-signed app (`Wrong signature - go/gearhead-retail-device`) and crashes it. The handler is skipped. |
+| `Always two-wheeler on Android Auto` | Android Auto's "supported mode" normally allows two-wheeler only when the head unit reports a motorcycle; it now returns two-wheeler, so destinations searched on the head unit default to two-wheeler routes. |
+| `Allow any travel mode on Android Auto` | Removes the two checks that refuse or end car navigation when the travel mode differs. |
+| `Two-wheeler instead of driving` (optional) | Rewrites every driving route request as two-wheeler. |
 
-原始碼在 `patch/patches/src/main/kotlin/tw/maps/`;完整除錯過程、logcat 證據與 26.44 的名稱對應見 [findings.md](findings.md)。
+Source: `patch/patches/src/main/kotlin/tw/maps/`. The full debugging history, logcat evidence and 26.44 name mappings are in [findings.md](findings.md) (Chinese).
 
-## 原始來源與致謝
+## Original sources and credits
 
-本專案建立在以下專案之上:
+This project builds on:
 
-- **[Morphe](https://github.com/MorpheApp)**:patcher、Manager 與 [patches template](https://github.com/MorpheApp/morphe-patches-template)。
-- **[Dutch App Patches](https://codeberg.org/JohninNL/nl-morphe-patches)**(JohninNL,GPLv3;[GitLab 鏡像](https://gitlab.com/johninnld/nl-morphe-patches)):Android Auto 原生導航轉接器、`Change package name`、`Bypass Play Services checks`、`Add microG-RE support` 等。本 repo 的修正 patch 與說明見 [`third_party/dutch-app-patches/`](third_party/dutch-app-patches/)。
-- **[bearinmind patches](https://github.com/bearinmindcat/morphe-patches)**(bearinmindcat):Dutch App Patches 中 Maps 功能的原始來源。
-- **[MicroG-RE](https://github.com/MorpheApp/MicroG-RE)**(MorpheApp)與 **[microG](https://github.com/microg/GmsCore)**(microG Project,Apache-2.0):我的 [MicroG-RE fork](https://github.com/shuili1013/MicroG-RE) 以此為基礎。
+- **[Morphe](https://github.com/MorpheApp)**: patcher, Manager and the [patches template](https://github.com/MorpheApp/morphe-patches-template).
+- **[Dutch App Patches](https://codeberg.org/JohninNL/nl-morphe-patches)** (JohninNL, GPLv3; [GitLab mirror](https://gitlab.com/johninnld/nl-morphe-patches)): the native Android Auto navigation adapter, `Change package name`, `Bypass Play Services checks`, `Add microG-RE support` and more. This repo's fix patches and notes are in [`third_party/dutch-app-patches/`](third_party/dutch-app-patches/).
+- **[bearinmind patches](https://github.com/bearinmindcat/morphe-patches)** (bearinmindcat): the original source of the Maps features in Dutch App Patches.
+- **[MicroG-RE](https://github.com/MorpheApp/MicroG-RE)** (MorpheApp) and **[microG](https://github.com/microg/GmsCore)** (microG Project, Apache-2.0): this version of MicroG-RE ([shuili1013/MicroG-RE](https://github.com/shuili1013/MicroG-RE)) is based on them.
 
-## 授權
+## License
 
-- 本 repo 的程式碼:見 [LICENSE](LICENSE)(Apache-2.0)。
-- `third_party/dutch-app-patches/` 的 patch 與 release 中的 Dutch App Patches 修正版:GPLv3,同上游。
-- MicroG-RE fork:Apache-2.0,同上游。
-- 本專案不散布任何 Google 的 APK。
+- Code in this repo: see [LICENSE](LICENSE) (Apache-2.0).
+- The patches in `third_party/dutch-app-patches/` and the fixed Dutch App Patches bundle in the releases: GPLv3, as upstream.
+- This version of MicroG-RE: Apache-2.0, as upstream.
+- This project does not distribute any Google APK.
 
-## 研究紀錄
+## Research notes
 
-最初的逆向研究(DEX 反組譯腳本、離線測試、交接文件)保留在 [handoff.md](handoff.md)、[findings.md](findings.md)、`scripts/`、`tests/` 與 [patch/README.md](patch/README.md)。
+The original reverse-engineering work (DEX disassembly scripts, offline tests, handoff notes) is kept in [handoff.md](handoff.md), [findings.md](findings.md), `scripts/`, `tests/` and [patch/README.md](patch/README.md) (mostly Chinese).
