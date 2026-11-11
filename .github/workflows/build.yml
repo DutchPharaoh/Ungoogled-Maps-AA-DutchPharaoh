@@ -1,0 +1,40 @@
+name: Build patches
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  packages: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build .mpp
+        working-directory: patch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+        run: |
+          chmod +x gradlew
+          ./gradlew :patches:buildAndroid --no-daemon
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(grep '^version=' patch/gradle.properties | cut -d= -f2)
+          FILE=$(ls patch/patches/build/libs/patches-*.mpp | head -1)
+          ls -l "$FILE"
+          gh release create "v$VERSION" "$FILE" --title "v$VERSION" --notes "Build with Android Auto scroll fix" \
+            || gh release upload "v$VERSION" "$FILE" --clobber
