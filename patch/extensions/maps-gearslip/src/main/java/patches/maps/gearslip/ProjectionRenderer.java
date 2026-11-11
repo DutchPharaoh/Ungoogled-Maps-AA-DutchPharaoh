@@ -293,7 +293,17 @@ public final class ProjectionRenderer {
         guard(() -> {
             if (downTime == 0) {
                 downTime = SystemClock.uptimeMillis();
-                touchX = width / 2f; touchY = height / 2f;
+                // Android Auto only reports scroll distances, not where the finger is. Start the
+                // synthetic drag on a visible scrollable list (settings, report incident) when one
+                // is shown, so it scrolls instead of panning the map underneath; else use the centre.
+                View list = scrollableView(decor());
+                if (list != null) {
+                    int[] at = new int[2];
+                    list.getLocationInWindow(at);
+                    touchX = at[0] + list.getWidth() / 2f; touchY = at[1] + list.getHeight() / 2f;
+                } else {
+                    touchX = width / 2f; touchY = height / 2f;
+                }
                 touch(MotionEvent.ACTION_DOWN, touchX, touchY);
             }
             touchX = Math.max(1, Math.min(width - 1, touchX - distanceX));
@@ -413,6 +423,18 @@ public final class ProjectionRenderer {
         Method method = presentation.getClass().getMethod("f");
         Window window = (Window) method.invoke(presentation);
         return window == null ? null : window.getDecorView();
+    }
+    /** Topmost visible view that can scroll vertically, or null (the map itself never qualifies). */
+    private static View scrollableView(View view) {
+        if (view == null || !view.isShown() || view.getWidth() == 0 || view.getHeight() == 0) return null;
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) view;
+            for (int i = group.getChildCount() - 1; i >= 0; i--) { // last child is drawn on top
+                View found = scrollableView(group.getChildAt(i));
+                if (found != null) return found;
+            }
+        }
+        return view.canScrollVertically(1) || view.canScrollVertically(-1) ? view : null;
     }
     private void finishTouch() throws Exception {
         main.removeCallbacks(endScroll);
