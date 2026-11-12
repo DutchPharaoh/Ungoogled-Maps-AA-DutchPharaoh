@@ -6,10 +6,10 @@ patches {
         description = "Google Maps 26.44.06.1006895251: native Android Auto navigation with two-wheeler routes. " +
             "Includes the required Dutch App Patches (JohninNL, GPLv3) Maps patches. " +
             "Fork by DutchPharaoh with Android Auto scrolling and split-screen layout fixes."
-        source = "https://github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe"
+        source = "https://github.com/DutchPharaoh/Ungoogled-Maps-AA-DutchPharaoh"
         author = "DutchPharaoh (fork of shuili1013); includes Dutch App Patches by JohninNL"
-        contact = "https://github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe/issues"
-        website = "https://github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe"
+        contact = "https://github.com/DutchPharaoh/Ungoogled-Maps-AA-DutchPharaoh/issues"
+        website = "https://github.com/DutchPharaoh/Ungoogled-Maps-AA-DutchPharaoh"
         license = "GPL-3.0"
     }
 }
