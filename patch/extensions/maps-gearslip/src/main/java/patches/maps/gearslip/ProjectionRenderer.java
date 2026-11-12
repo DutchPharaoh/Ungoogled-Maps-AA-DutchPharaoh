@@ -66,6 +66,7 @@ public final class ProjectionRenderer {
     private Runnable controlsChanged = () -> {};
     private java.util.function.BiConsumer<CharSequence,Integer> toast=(text,duration)->{};
     private Rect visibleArea, stableArea, appliedInsets;
+    private static final boolean FULL_CANVAS = true;
     private long downTime;
     private float touchX, touchY;
     private final Runnable endScroll = () -> guard(this::finishTouch);
@@ -204,6 +205,11 @@ public final class ProjectionRenderer {
     public void visibleArea(Rect area) { guard(() -> { visibleArea = area == null ? null : new Rect(area); visibleBounds.set(area == null ? new Rect() : area); applyAreas(); if (resumed) telemetrySurface(decor()); }); }
     public void stableArea(Rect area) { guard(() -> { stableArea = area == null ? null : new Rect(area); stableBounds.set(area == null ? new Rect() : area); applyAreas(); if (resumed) telemetrySurface(decor()); }); }
     private Rect insets(int w, int h) {
+        // The host's visible/stable areas reserve margins for template chrome (action
+        // strips) that this app-owned UI never shows. Stock Maps gets the whole canvas,
+        // so its speedometer and location puck sit in the real corner and centre; passing
+        // these margins on squeezed them together in the half-screen layout.
+        if (FULL_CANVAS) return new Rect();
         Rect canvas = new Rect(0, 0, w, h), safe = visibleArea == null ? null : new Rect(visibleArea);
         if (safe == null || safe.isEmpty() || !safe.intersect(canvas)) safe = stableArea == null ? null : new Rect(stableArea);
         if (safe == null || safe.isEmpty() || !safe.intersect(canvas)) return new Rect();
