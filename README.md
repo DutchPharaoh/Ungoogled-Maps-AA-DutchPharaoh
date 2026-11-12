@@ -1,5 +1,24 @@
 # Maps-AA-AnyMode-Morphe: two-wheeler navigation with Google Maps on Android Auto
 
+> **This is a fork** of [shuili1013/Maps-AA-AnyMode-Morphe](https://github.com/shuili1013/Maps-AA-AnyMode-Morphe), maintained by DutchPharaoh. It contains every patch from upstream unchanged, plus the fixes below. In Morphe the source is called **Ungoogled Maps AA (DutchPharaoh)**.
+
+## Changes in this fork
+
+| Version | Change |
+|---|---|
+| 1.0.2 | **Scrolling lists on Android Auto.** Android Auto only reports how far you swipe, not where your finger is, so every swipe started in the middle of the screen and moved the map. Lists such as *Settings* and *Report incident* could not be scrolled. A swipe now starts on the visible scrollable list when one is shown; with no list open the map pans as before. (`ProjectionRenderer.java`) |
+| 1.0.3 | **Speedometer and layout in split screen** *(experimental)*. Android Auto reserves margins around the map for controls of its own navigation template, which this app-drawn UI never shows. Passing those margins to Maps squeezed its layout: in half-screen mode the speedometer sat on top of the location arrow, and cards were pushed away from the edge. Maps now gets the whole map area, like stock Google Maps on Android Auto. To go back to the old behaviour, set `FULL_CANVAS = false` in `ProjectionRenderer.java`. |
+| 1.0.4 | Patch bundle renamed to *Ungoogled Maps AA (DutchPharaoh)*; bundle links point to this fork. |
+
+**Automatic builds:** `.github/workflows/build.yml` builds the patch bundle on every push to `main` and publishes it as a GitHub release; `patches-bundle.json` points Morphe to that release.
+
+**Using this fork:** in Morphe go to *Sources → + → Remote*, enter `github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe` and disable the upstream source if you added it. Everything else in the instructions below stays the same.
+
+---
+
+*Original README (links updated to this fork):*
+
+
 **English** | [中文](README.zh-TW.md)
 
 Makes **Google Maps navigate on an Android Auto head unit with its native car interface, including two-wheeler (motorcycle) routes**. Intended for an Android Auto screen mounted on a motorcycle: stock Google Maps only allows driving routes on Android Auto and refuses two-wheeler navigation.
@@ -27,7 +46,7 @@ This project does not distribute Google Maps. Get the original APKM of the versi
 |---|---|
 | Morphe Manager | <https://morphe.software> |
 | **This version of MicroG-RE** (required) | [shuili1013/MicroG-RE releases](https://github.com/shuili1013/MicroG-RE/releases/tag/v7.3.0-maps-fix) → `microg-re-maps-fix-7.3.0.apk` |
-| This project's patch bundle | Add the remote source `github.com/shuili1013/Maps-AA-AnyMode-Morphe` in Morphe (or download `patches-1.0.1.mpp` from [Releases](https://github.com/shuili1013/Maps-AA-AnyMode-Morphe/releases) and add it as a local source) |
+| This project's patch bundle | Add the remote source `github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe` in Morphe (or download `the latest `.mpp`` from [Releases](https://github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe/releases) and add it as a local source) |
 
 The bundle already includes the Dutch App Patches features it needs; you do not need to add Dutch App Patches separately.
 
@@ -44,7 +63,7 @@ If official MicroG-RE is already installed, **uninstall it first**, then install
 
 1. **Install MicroG-RE** (link above) and run its Self-Check.
 2. **Morphe settings → Patching → enable Expert mode.**
-3. **Sources → + → Remote →** enter `github.com/shuili1013/Maps-AA-AnyMode-Morphe`. If you previously added Dutch App Patches for Maps, disable it.
+3. **Sources → + → Remote →** enter `github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe`. If you previously added Dutch App Patches for Maps, disable it.
 4. **Patch Google Maps** (the 26.44 APKM) and select these patches from the **Maps-AA-AnyMode-Morphe** source (all are on by default):
    - `Change package name`
    - `Bypass Play Services checks`
