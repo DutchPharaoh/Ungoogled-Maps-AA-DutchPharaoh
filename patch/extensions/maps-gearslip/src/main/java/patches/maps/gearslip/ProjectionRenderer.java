@@ -205,15 +205,23 @@ public final class ProjectionRenderer {
     public void visibleArea(Rect area) { guard(() -> { visibleArea = area == null ? null : new Rect(area); visibleBounds.set(area == null ? new Rect() : area); applyAreas(); if (resumed) telemetrySurface(decor()); }); }
     public void stableArea(Rect area) { guard(() -> { stableArea = area == null ? null : new Rect(area); stableBounds.set(area == null ? new Rect() : area); applyAreas(); if (resumed) telemetrySurface(decor()); }); }
     private Rect insets(int w, int h) {
-        // The host's visible/stable areas reserve margins for template chrome (action
-        // strips) that this app-owned UI never shows. Stock Maps gets the whole canvas,
-        // so its speedometer and location puck sit in the real corner and centre; passing
-        // these margins on squeezed them together in the half-screen layout.
-        if (FULL_CANVAS) return new Rect();
         Rect canvas = new Rect(0, 0, w, h), safe = visibleArea == null ? null : new Rect(visibleArea);
         if (safe == null || safe.isEmpty() || !safe.intersect(canvas)) safe = stableArea == null ? null : new Rect(stableArea);
         if (safe == null || safe.isEmpty() || !safe.intersect(canvas)) return new Rect();
-        return new Rect(safe.left, safe.top, w - safe.right, h - safe.bottom);
+        Rect insets = new Rect(safe.left, safe.top, w - safe.right, h - safe.bottom);
+        if (FULL_CANVAS) {
+            // The host's visible area also reserves small margins for template chrome
+            // (action strips) that this app-owned UI never shows; passing them on squeezed
+            // the speedometer onto the location puck in split screen. Keep real occlusions,
+            // such as the media card covering part of the surface in split screen, and
+            // drop only margins smaller than a fifth of the surface.
+            int minX = w / 5, minY = h / 5;
+            if (insets.left < minX) insets.left = 0;
+            if (insets.right < minX) insets.right = 0;
+            if (insets.top < minY) insets.top = 0;
+            if (insets.bottom < minY) insets.bottom = 0;
+        }
+        return insets;
     }
     private void applyAreas() throws Exception {
         if (!created || controller == null) return;

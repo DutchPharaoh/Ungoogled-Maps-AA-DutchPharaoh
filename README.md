@@ -7,8 +7,9 @@
 | Version | Change |
 |---|---|
 | 1.0.2 | **Scrolling lists on Android Auto.** Android Auto only reports how far you swipe, not where your finger is, so every swipe started in the middle of the screen and moved the map. Lists such as *Settings* and *Report incident* could not be scrolled. A swipe now starts on the visible scrollable list when one is shown; with no list open the map pans as before. (`ProjectionRenderer.java`) |
-| 1.0.3 | **Speedometer and layout in split screen** *(experimental)*. Android Auto reserves margins around the map for controls of its own navigation template, which this app-drawn UI never shows. Passing those margins to Maps squeezed its layout: in half-screen mode the speedometer sat on top of the location arrow, and cards were pushed away from the edge. Maps now gets the whole map area, like stock Google Maps on Android Auto. To go back to the old behaviour, set `FULL_CANVAS = false` in `ProjectionRenderer.java`. |
+| 1.0.3 | **Speedometer and layout in split screen** *(experimental)*. Android Auto reserves margins around the map for controls of its own navigation template, which this app-drawn UI never shows. Passing those margins to Maps squeezed its layout: in half-screen mode the speedometer sat on top of the location arrow, and cards were pushed away from the edge. Maps now gets the whole map area, like stock Google Maps on Android Auto. Refined in 1.0.5. To go back to the original behaviour, set `FULL_CANVAS = false` in `ProjectionRenderer.java`. |
 | 1.0.4 | Patch bundle renamed to *Ungoogled Maps AA (DutchPharaoh)*; bundle links point to this fork. |
+| 1.0.5 | **Split-screen fix, take two.** 1.0.3 also dropped the area covered by the media card in split screen, so the location arrow and route ended up hidden behind it. Large covered areas are passed to Maps again; only the small margins (less than a fifth of the screen) are still dropped. |
 
 **Automatic builds:** `.github/workflows/build.yml` builds the patch bundle on every push to `main` and publishes it as a GitHub release; `patches-bundle.json` points Morphe to that release.
 
