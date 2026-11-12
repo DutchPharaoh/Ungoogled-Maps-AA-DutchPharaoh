@@ -1,4 +1,4 @@
-# Maps-AA-AnyMode-Morphe: two-wheeler navigation with Google Maps on Android Auto
+# Ungoogled Maps AA (DutchPharaoh): fork of Maps-AA-AnyMode-Morphe
 
 > **This is a fork** of [shuili1013/Maps-AA-AnyMode-Morphe](https://github.com/shuili1013/Maps-AA-AnyMode-Morphe), maintained by DutchPharaoh. It contains every patch from upstream unchanged, plus the fixes below. In Morphe the source is called **Ungoogled Maps AA (DutchPharaoh)**.
 
@@ -12,7 +12,7 @@
 
 **Automatic builds:** `.github/workflows/build.yml` builds the patch bundle on every push to `main` and publishes it as a GitHub release; `patches-bundle.json` points Morphe to that release.
 
-**Using this fork:** in Morphe go to *Sources → + → Remote*, enter `github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe` and disable the upstream source if you added it. Everything else in the instructions below stays the same.
+**Using this fork:** in Morphe go to *Sources → + → Remote*, enter `github.com/DutchPharaoh/Ungoogled-Maps-AA-DutchPharaoh` and disable the upstream source if you added it. Everything else in the instructions below stays the same.
 
 ---
 
@@ -46,7 +46,7 @@ This project does not distribute Google Maps. Get the original APKM of the versi
 |---|---|
 | Morphe Manager | <https://morphe.software> |
 | **This version of MicroG-RE** (required) | [shuili1013/MicroG-RE releases](https://github.com/shuili1013/MicroG-RE/releases/tag/v7.3.0-maps-fix) → `microg-re-maps-fix-7.3.0.apk` |
-| This project's patch bundle | Add the remote source `github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe` in Morphe (or download `the latest `.mpp`` from [Releases](https://github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe/releases) and add it as a local source) |
+| This project's patch bundle | Add the remote source `github.com/DutchPharaoh/Ungoogled-Maps-AA-DutchPharaoh` in Morphe (or download `the latest `.mpp`` from [Releases](https://github.com/DutchPharaoh/Ungoogled-Maps-AA-DutchPharaoh/releases) and add it as a local source) |
 
 The bundle already includes the Dutch App Patches features it needs; you do not need to add Dutch App Patches separately.
 
@@ -63,7 +63,7 @@ If official MicroG-RE is already installed, **uninstall it first**, then install
 
 1. **Install MicroG-RE** (link above) and run its Self-Check.
 2. **Morphe settings → Patching → enable Expert mode.**
-3. **Sources → + → Remote →** enter `github.com/DutchPharaoh/Maps-AA-AnyMode-Morphe`. If you previously added Dutch App Patches for Maps, disable it.
+3. **Sources → + → Remote →** enter `github.com/DutchPharaoh/Ungoogled-Maps-AA-DutchPharaoh`. If you previously added Dutch App Patches for Maps, disable it.
 4. **Patch Google Maps** (the 26.44 APKM) and select these patches from the **Maps-AA-AnyMode-Morphe** source (all are on by default):
    - `Change package name`
    - `Bypass Play Services checks`
