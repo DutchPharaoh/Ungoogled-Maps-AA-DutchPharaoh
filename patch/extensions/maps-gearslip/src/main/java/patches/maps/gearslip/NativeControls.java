@@ -44,6 +44,13 @@ final class NativeControls implements ViewTreeObserver.OnGlobalLayoutListener, V
         String title; Bitmap icon; int stamp; boolean available;
         Control(Role role, View source) { this.role = role; this.source = source; }
     }
+    /**
+     * Keep Maps' own map buttons (the settings/sound/compass/report rail and zoom) on the
+     * map, as stock Google Maps on Android Auto shows them, instead of moving them into the
+     * host's action strips. Those strips pop up over the route and make the host reserve a
+     * margin beside the map. Search and voice outside the map buttons are still exported.
+     */
+    static boolean nativeMapButtons = true;
     private final ViewGroup root;
     private final Runnable changed;
     private final Map<Role, Control> controls = new EnumMap<>(Role.class);
@@ -68,7 +75,7 @@ final class NativeControls implements ViewTreeObserver.OnGlobalLayoutListener, V
     @Override public void onGlobalLayout() {
         if (closed) return;
         Map<Role, View> found = new EnumMap<>(Role.class);
-        collect(root, found);
+        collect(root, found, false);
         boolean updated = false;
         for (Role role : Role.values()) {
             View source = found.get(role); Control old = controls.get(role);
@@ -87,9 +94,11 @@ final class NativeControls implements ViewTreeObserver.OnGlobalLayoutListener, V
         }
         return true;
     }
-    private void collect(View view, Map<Role, View> found) {
+    private void collect(View view, Map<Role, View> found, boolean mapButtons) {
         String name = name(view);
+        mapButtons |= "map_buttons_view_container".equals(name);
         if (name != null && nativeVisibility(view) != View.GONE) for (Role role : Role.values()) {
+            if (nativeMapButtons && (mapButtons || role.map)) continue;
             boolean matches = false;
             for (String candidate : role.names) if (candidate.equals(name)) { matches = true; break; }
             if (!matches) continue;
@@ -98,7 +107,7 @@ final class NativeControls implements ViewTreeObserver.OnGlobalLayoutListener, V
         }
         // Native destination panels are layered above the map's older controls.
         // Prefer the frontmost matching owner when both remain in the tree.
-        if (view instanceof ViewGroup) for (int i = ((ViewGroup) view).getChildCount() - 1; i >= 0; i--) collect(((ViewGroup) view).getChildAt(i), found);
+        if (view instanceof ViewGroup) for (int i = ((ViewGroup) view).getChildCount() - 1; i >= 0; i--) collect(((ViewGroup) view).getChildAt(i), found, mapButtons);
     }
     private View clickable(View view) {
         if (nativeVisibility(view) == View.GONE) return null;

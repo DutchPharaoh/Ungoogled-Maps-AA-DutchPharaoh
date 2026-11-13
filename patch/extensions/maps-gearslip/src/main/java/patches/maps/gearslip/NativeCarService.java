@@ -461,7 +461,11 @@ public final class NativeCarService extends Service {
         for (NativeControls.Control control : mainControls)
             actions.add(CarProtocol.action(control.title, control.icon, new ActionBinder(session, control)));
         if (!overflow.isEmpty()) actions.add(CarProtocol.action(session.renderer.controlsTitle(), NativeControls.moreIcon(), new ActionBinder(session, null)));
-        mapActions.add(CarProtocol.panAction());
+        // With Maps' own buttons on the map there is nothing left for the map strip. Leave it
+        // out entirely, pan button included, so the host reserves no margin beside the map
+        // (it pushed the speedometer onto the location arrow). Touch drags still reach onScroll;
+        // only a rotary-only car loses its way into pan mode.
+        if (!NativeControls.nativeMapButtons || !mapControls.isEmpty()) mapActions.add(CarProtocol.panAction());
         for (NativeControls.Control control : mapControls)
             mapActions.add(CarProtocol.action(null, control.icon, new ActionBinder(session, control)));
         return CarProtocol.template(null, actions, mapActions, new PanBinder(session));
