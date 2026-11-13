@@ -386,6 +386,19 @@ public final class NativeCarServiceTest {
         public void k() {}
     }
     @Test public void anUnmodifiedCalHostReceivesNativeActionsAndAStandardOverflowList() throws Exception {
+        NativeControls.nativeMapButtons = false;
+        try { hostStripExport(); } finally { NativeControls.nativeMapButtons = true; }
+    }
+    @Test public void stockLayoutLeavesMapButtonsOnTheMapAndSendsNoMapStrip() throws Exception {
+        java.util.Map<NativeControls.Role, Integer> clicks = new java.util.EnumMap<>(NativeControls.Role.class);
+        FrameLayout group = nativeMapButtons(clicks);
+        NavigationTemplate navigation = (NavigationTemplate) decodedTemplate(manager());
+        assertTrue(navigation.getActionStrip().getActions().isEmpty());
+        assertNull(navigation.getMapActionStrip());
+        assertNotNull(navigation.getPanModeDelegate());
+        assertEquals(View.VISIBLE, group.getVisibility());
+    }
+    private FrameLayout nativeMapButtons(java.util.Map<NativeControls.Role, Integer> clicks) throws Exception {
         handshake(HOST);
         Activity activity = Robolectric.buildActivity(Activity.class).setup().get();
         java.util.Map<Integer, String> names = new java.util.HashMap<>(); names.put(0x7f990001, "map_buttons_view_container");
@@ -396,7 +409,6 @@ public final class NativeCarServiceTest {
         Context context = new ContextWrapper(activity) { @Override public Resources getResources() { return resources; } };
         FrameLayout root = new FrameLayout(context), group = new FrameLayout(context); group.setId(0x7f990001);
         root.addView(group, new FrameLayout.LayoutParams(640, 480)); activity.setContentView(root);
-        java.util.Map<NativeControls.Role, Integer> clicks = new java.util.EnumMap<>(NativeControls.Role.class);
         int id = 0x7f990010;
         for (NativeControls.Role role : NativeControls.Role.values()) {
             names.put(id, role.names[0]); ImageView view = new ImageView(context); view.setId(id++);
@@ -409,6 +421,11 @@ public final class NativeCarServiceTest {
         java.lang.reflect.Field nativeController = ProjectionRenderer.class.getDeclaredField("controller"); nativeController.setAccessible(true);
         nativeController.set(renderer, new TemplateController(activity.getWindow()));
         java.lang.reflect.Field current = session.getClass().getDeclaredField("renderer"); current.setAccessible(true); current.set(session, renderer);
+        return group;
+    }
+    private void hostStripExport() throws Exception {
+        java.util.Map<NativeControls.Role, Integer> clicks = new java.util.EnumMap<>(NativeControls.Role.class);
+        FrameLayout group = nativeMapButtons(clicks);
         IBinder app = manager(); NavigationTemplate navigation = (NavigationTemplate) decodedTemplate(app);
         assertEquals(4, navigation.getActionStrip().getActions().size());
         assertEquals(4, navigation.getMapActionStrip().getActions().size());

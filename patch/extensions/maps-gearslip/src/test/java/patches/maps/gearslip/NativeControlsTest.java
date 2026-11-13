@@ -30,6 +30,8 @@ public final class NativeControlsTest {
     private Context context;
     private int clicks, updates;
     @Before public void setup() {
+        // Most tests cover the host-strip export mode; the stock layout mode has its own tests below.
+        NativeControls.nativeMapButtons = false;
         Activity activity = Robolectric.buildActivity(Activity.class).setup().get();
         Resources original = activity.getResources();
         Resources resources = new Resources(activity.getAssets(), original.getDisplayMetrics(), original.getConfiguration()) {
@@ -61,7 +63,27 @@ public final class NativeControlsTest {
         controls = new NativeControls(root, () -> updates++);
         assertEquals(1, controls.snapshot().size()); return controls.snapshot().get(0);
     }
-    @After public void close() { if (controls != null) controls.close(); }
+    @After public void close() { if (controls != null) controls.close(); NativeControls.nativeMapButtons = true; }
+    @Test public void stockLayoutKeepsMapButtonsVisibleOnTheMapAndExportsOnlySearch() {
+        NativeControls.nativeMapButtons = true;
+        ImageView search = new ImageView(context); search.setId(SEARCH); search.setImageDrawable(new ColorDrawable(Color.BLUE));
+        search.setOnClickListener(v -> {}); root.addView(search, new FrameLayout.LayoutParams(300, 64)); measure();
+        controls = new NativeControls(root, () -> updates++);
+        assertEquals(1, controls.snapshot().size());
+        assertEquals(NativeControls.Role.SEARCH, controls.snapshot().get(0).role);
+        assertEquals(View.VISIBLE, group.getVisibility()); assertEquals(View.VISIBLE, button.getVisibility());
+    }
+    @Test public void stockLayoutLeavesNativeMapButtonTouchesToMaps() {
+        NativeControls.nativeMapButtons = true;
+        controls = new NativeControls(root, () -> updates++);
+        long now = SystemClock.uptimeMillis();
+        MotionEvent down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN, 32, 32, 0);
+        MotionEvent up = MotionEvent.obtain(now, now + 1, MotionEvent.ACTION_UP, 32, 32, 0);
+        try { root.dispatchTouchEvent(down); root.dispatchTouchEvent(up); }
+        finally { down.recycle(); up.recycle(); }
+        org.robolectric.Shadows.shadowOf(android.os.Looper.getMainLooper()).idle();
+        assertTrue(controls.snapshot().isEmpty()); assertEquals(1, clicks);
+    }
     @Test public void exportsNativeActionsWithoutReparentingOrResizingTheNativeMap() {
         NativeControls.Control control = bind();
         assertEquals(NativeControls.Role.SETTINGS, control.role); assertEquals("Settings", control.title);
